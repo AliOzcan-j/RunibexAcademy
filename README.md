@@ -1,5 +1,5 @@
 # RunibexAcademy
 
 <p align="center">
-  <img width="80%" src="Database/Diagram.png">
+  <img width="85%" src="Database/Diagram.png">
 </p>

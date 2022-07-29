@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Business;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -23,28 +25,48 @@ namespace Business.Concrete
 
         public IResult Add(Brand entity)
         {
+
+            IResult result = BusinessRules.Run(CheckIfReturnedNull(entity.Id));
+
+            if(result != null)
+            {
+                return result;
+            }
+
             _brandDal.Add(entity);
             return new SuccessResult();
         }
 
         public IResult Delete(Brand entity)
         {
-            throw new NotImplementedException();
+            _brandDal.Delete(entity);
+            return new SuccessResult();
         }
 
-        public IDataResult<Brand> Get(Expression<Func<Brand, bool>> filter)
+        public IDataResult<Brand> GetByName(string name)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<Brand>(_brandDal.Get(b => b.Name == name));
         }
 
-        public IDataResult<List<Brand>> GetAll(Expression<Func<Brand, bool>> filter = null)
+        public IDataResult<List<Brand>> GetAll()
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAllWithoutTracker());
         }
 
         public IResult Update(Brand entity)
         {
-            throw new NotImplementedException();
+            _brandDal.Update(entity);
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfReturnedNull(int id)
+        {
+            var result = _brandDal.Get(p => p.Id == id);
+            if (result != null)
+            {
+                return new ErrorResult(Messages.BrandAlreadyExists);
+            }
+            return new SuccessResult();
         }
     }
 }

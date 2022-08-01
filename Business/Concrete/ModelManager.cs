@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Business.Concrete;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -22,6 +24,13 @@ namespace Business.Concrete
 
         public IResult Add(Model entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Name));
+
+            if (result != null)
+            {
+                return result;
+            }
+
             _modelDal.Add(entity);
             return new SuccessResult();
         }
@@ -42,6 +51,11 @@ namespace Business.Concrete
             return new SuccessDataResult<Model>(_modelDal.Get(m => m.BrandId == id));
         }
 
+        public IDataResult<Model> GetById(int id)
+        {
+            return new SuccessDataResult<Model>(_modelDal.Get(m => m.Id == id));
+        }
+
         public IDataResult<Model> GetByName(string name)
         {
             return new SuccessDataResult<Model>(_modelDal.Get(m => m.Name == name));
@@ -50,6 +64,16 @@ namespace Business.Concrete
         public IResult Update(Model entity)
         {
             _modelDal.Update(entity);
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfExists(string name)
+        {
+            var result = GetByName(name).Data;
+            if (result != null)
+            {
+                return new ErrorResult(Messages.ThisRecordExists);
+            }
             return new SuccessResult();
         }
     }

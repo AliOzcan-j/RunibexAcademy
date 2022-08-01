@@ -26,13 +26,16 @@ namespace DataAccess.Concrete.EntityFrameworkCore
         public DbSet<FuelType> FuelTypes { get; set; }
         public DbSet<CarImage> CarImages { get; set; }
         public DbSet<Rental> Rentals { get; set; }
+        public DbSet<CarDetailDto> CarDetailDtos { get; set; }
 
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
                 .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
-                .UseMySql("Server=localhost;Database=CarRental;Uid=root;Pwd=mysql1234", new MySqlServerVersion(new Version(8, 0, 29)));
+                .UseMySql("Server=localhost;Database=CarRental;Uid=root;Pwd=mysql1234", new MySqlServerVersion(new Version(8, 0, 29)), options =>
+                {
+                    options.EnableStringComparisonTranslations();
+                });
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -83,8 +86,10 @@ namespace DataAccess.Concrete.EntityFrameworkCore
             #region CreditCardModel
             modelBuilder.Entity<CreditCard>().Property(x => x.CardNumberSalt).HasColumnType("varbinary(500)");
             modelBuilder.Entity<CreditCard>().Property(x => x.CardNumberHash).HasColumnType("varbinary(500)");
-            modelBuilder.Entity<CreditCard>().Property(x => x.ExpirationDate).HasColumnType("varbinary(500)");
-            modelBuilder.Entity<CreditCard>().Property(x => x.CardHolderName).HasColumnType("varbinary(500)");
+            modelBuilder.Entity<CreditCard>().Property(x => x.ExpirationDateSalt).HasColumnType("varbinary(500)");
+            modelBuilder.Entity<CreditCard>().Property(x => x.ExpirationDateHash).HasColumnType("varbinary(500)");
+            modelBuilder.Entity<CreditCard>().Property(x => x.CardHolderNameSalt).HasColumnType("varbinary(500)");
+            modelBuilder.Entity<CreditCard>().Property(x => x.CardHolderNameHash).HasColumnType("varbinary(500)");
             #endregion
 
             #region CountryModel
@@ -102,13 +107,19 @@ namespace DataAccess.Concrete.EntityFrameworkCore
             #endregion
 
             #region CarModel
-            modelBuilder.Entity<Car>().Property(x => x.Milage).HasColumnType("varchar(15)");
+            modelBuilder.Entity<Car>().Property(x => x.MilageLimit).HasDefaultValue(true);
             modelBuilder.Entity<Car>().Property(x => x.DailyPrice).HasPrecision(18, 2);
             modelBuilder.Entity<Car>().Property(x => x.IsDeleted).HasDefaultValue(false);
             #endregion
 
             #region BrandModel
             modelBuilder.Entity<Brand>().Property(x => x.Name).HasColumnType("nvarchar(50)");
+            #endregion
+
+
+            #region DtoModels
+            modelBuilder.Entity<CarDetailDto>().HasNoKey();
+            modelBuilder.Entity<CarDetailDto>().ToTable(nameof(CarDetailDto), x => x.ExcludeFromMigrations());
             #endregion
 
             base.OnModelCreating(modelBuilder);

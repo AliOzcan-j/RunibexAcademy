@@ -1,15 +1,11 @@
-﻿using Core.Utilities.Results.Abstract;
+﻿using Core.Utilities.Business.Abstract;
+using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
 
 namespace Business.Abstract
 {
-    public interface IModelService
+    public interface IModelService : IEntityServiceBase<Model>
     {
-        IDataResult<List<Model>> GetAll();
-        IDataResult<Model> GetByName(string name);
         IDataResult<Model> GetByBrandId(int id);
-        IResult Add(Model entity);
-        IResult Update(Model entity);
-        IResult Delete(Model entity);
     }
 }

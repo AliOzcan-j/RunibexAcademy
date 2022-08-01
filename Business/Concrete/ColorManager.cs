@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Business.Concrete;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -22,6 +24,13 @@ namespace Business.Concrete
 
         public IResult Add(Color entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Name));
+
+            if (result != null)
+            {
+                return result;
+            }
+
             _colorDal.Add(entity);
             return new SuccessResult();
         }
@@ -42,9 +51,24 @@ namespace Business.Concrete
             return new SuccessDataResult<Color>(_colorDal.Get(c => c.Name == name));
         }
 
+        public IDataResult<Color> GetById(int id)
+        {
+            return new SuccessDataResult<Color>(_colorDal.Get(c => c.Id == id));
+        }
+
         public IResult Update(Color entity)
         {
             _colorDal.Update(entity);
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfExists(string name)
+        {
+            var result = GetByName(name).Data;
+            if (result != null)
+            {
+                return new ErrorResult(Messages.ThisRecordExists);
+            }
             return new SuccessResult();
         }
     }

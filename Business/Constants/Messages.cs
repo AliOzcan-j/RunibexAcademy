@@ -8,6 +8,6 @@ namespace Business.Constants
 {
     public static class Messages
     {
-        public static string BrandAlreadyExists = "This brand already exists";
+        internal static string ThisRecordExists = "This Record Exists";
     }
 }

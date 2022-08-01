@@ -10,10 +10,10 @@ namespace Entities.Concrete
         public int ModelId { get; set; }
         public int ColorId { get; set; }
         public int FuelTypeId { get; set; }
-        public string Milage { get; set; }
+        public bool? MilageLimit { get; set; }
         public bool Transmission { get; set; }
         public decimal DailyPrice { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool? IsDeleted { get; set; }
         public Brand Brand { get; set; }
         public Model Model { get; set; }
         public Color Color { get; set; }

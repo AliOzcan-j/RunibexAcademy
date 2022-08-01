@@ -1,17 +1,17 @@
-﻿using Core.Utilities.Results.Abstract;
+﻿using Core.Utilities.Business.Abstract;
+using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
+using System.Linq.Expressions;
 
 namespace Business.Abstract
 {
-    public interface ICarService
+    public interface ICarService : IEntityServiceBase<Car>
     {
-        IDataResult<List<Car>> GetAll();
         IDataResult<List<Car>> GetBrandId(int id);
-        IDataResult<Car> GetModelId(int id);
+        IDataResult<List<Car>> GetModelId(int id);
         IDataResult<List<Car>> GetColorId(int id);
         IDataResult<List<Car>> GetFuleTypeId(int id);
-        IResult Add(Car entity);
-        IResult Update(Car entity);
-        IResult Delete(Car entity);
+        IDataResult<List<CarDetailDto>> GetCarDetails(Expression<Func<CarDetailDto, bool>> filter = null);
     }
 }

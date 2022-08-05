@@ -27,8 +27,14 @@ namespace DataAccess.Concrete.EntityFrameworkCore
         public DbSet<CarImage> CarImages { get; set; }
         public DbSet<Rental> Rentals { get; set; }
         public DbSet<CarDetailDto> CarDetailDtos { get; set; }
+        public DbSet<RentalDetailDto> RentalDetailDtos { get; set; }
+        public DbSet<CreditCardForStoreDto> CreditCardForStoreDtos { get; set; }
+        public DbSet<PaymentDetailDto> PaymentDetailDtos { get; set; }
+        public DbSet<UserDetailDto> UserDetailDtos { get; set; }
+        public DbSet<UserForLoginDto> UserForLoginDtos { get; set; }
+        public DbSet<UserForRegisterDto> UserForRegisterDtos { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
                 .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
@@ -118,8 +124,13 @@ namespace DataAccess.Concrete.EntityFrameworkCore
 
 
             #region DtoModels
-            modelBuilder.Entity<CarDetailDto>().HasNoKey();
-            modelBuilder.Entity<CarDetailDto>().ToTable(nameof(CarDetailDto), x => x.ExcludeFromMigrations());
+            modelBuilder.Entity<CarDetailDto>().HasNoKey().ToTable(nameof(CarDetailDto), x => x.ExcludeFromMigrations());
+            modelBuilder.Entity<RentalDetailDto>().HasNoKey().ToTable(nameof(RentalDetailDto), x => x.ExcludeFromMigrations());
+            modelBuilder.Entity<CreditCardForStoreDto>().HasNoKey().ToTable(nameof(CreditCardForStoreDto), x => x.ExcludeFromMigrations());
+            modelBuilder.Entity<PaymentDetailDto>().HasNoKey().ToTable(nameof(PaymentDetailDto), x => x.ExcludeFromMigrations());
+            modelBuilder.Entity<UserDetailDto>().HasNoKey().ToTable(nameof(UserDetailDto), x => x.ExcludeFromMigrations());
+            modelBuilder.Entity<UserForLoginDto>().HasNoKey().ToTable(nameof(UserForLoginDto), x => x.ExcludeFromMigrations());
+            modelBuilder.Entity<UserForRegisterDto>().HasNoKey().ToTable(nameof(UserForRegisterDto), x => x.ExcludeFromMigrations());
             #endregion
 
             base.OnModelCreating(modelBuilder);

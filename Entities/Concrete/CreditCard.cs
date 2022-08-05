@@ -5,6 +5,7 @@ namespace Entities.Concrete
     public class CreditCard : IEntity
     {
         public int Id { get; set; }
+        public int UserId { get; set; }
         public byte[] CardNumberSalt { get; set; }
         public byte[] CardNumberHash { get; set; }
         public byte[] ExpirationDateSalt { get; set; }

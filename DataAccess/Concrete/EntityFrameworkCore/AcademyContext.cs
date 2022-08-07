@@ -1,6 +1,7 @@
 ﻿using Entities.Concrete;
 using Entities.DTOs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,13 @@ namespace DataAccess.Concrete.EntityFrameworkCore
 {
     public class AcademyContext : DbContext
     {
+        public AcademyContext()
+        {
+        }
+
+        public AcademyContext(DbContextOptions options) : base(options)
+        {
+        }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
@@ -33,15 +41,26 @@ namespace DataAccess.Concrete.EntityFrameworkCore
         public DbSet<UserDetailDto> UserDetailDtos { get; set; }
         public DbSet<UserForLoginDto> UserForLoginDtos { get; set; }
         public DbSet<UserForRegisterDto> UserForRegisterDtos { get; set; }
+        public DbSet<CarImageListDto> carImageListDtos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder
+            if (!optionsBuilder.IsConfigured)
+            {
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+
+                var connectionString = configuration.GetConnectionString("Default");
+
+                optionsBuilder
                 .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
-                .UseMySql("Server=localhost;Database=CarRental;Uid=root;Pwd=mysql1234", new MySqlServerVersion(new Version(8, 0, 29)), options =>
-                {
-                    options.EnableStringComparisonTranslations();
-                });
+                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), options =>
+                 {
+                     options.EnableStringComparisonTranslations();
+                 });
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -122,7 +141,6 @@ namespace DataAccess.Concrete.EntityFrameworkCore
             modelBuilder.Entity<Brand>().Property(x => x.Name).HasColumnType("nvarchar(50)");
             #endregion
 
-
             #region DtoModels
             modelBuilder.Entity<CarDetailDto>().HasNoKey().ToTable(nameof(CarDetailDto), x => x.ExcludeFromMigrations());
             modelBuilder.Entity<RentalDetailDto>().HasNoKey().ToTable(nameof(RentalDetailDto), x => x.ExcludeFromMigrations());
@@ -131,6 +149,7 @@ namespace DataAccess.Concrete.EntityFrameworkCore
             modelBuilder.Entity<UserDetailDto>().HasNoKey().ToTable(nameof(UserDetailDto), x => x.ExcludeFromMigrations());
             modelBuilder.Entity<UserForLoginDto>().HasNoKey().ToTable(nameof(UserForLoginDto), x => x.ExcludeFromMigrations());
             modelBuilder.Entity<UserForRegisterDto>().HasNoKey().ToTable(nameof(UserForRegisterDto), x => x.ExcludeFromMigrations());
+            modelBuilder.Entity<CarImageListDto>().HasNoKey().ToTable(nameof(carImageListDtos), x => x.ExcludeFromMigrations());
             #endregion
 
             base.OnModelCreating(modelBuilder);

@@ -8,6 +8,11 @@ namespace Entities.Concrete
         public string Name { get; set; }
         public List<Car> Cars { get; set; } = new();
         public List<Model> Models { get; set; } = new();
+
+        public static implicit operator List<object>(Color v)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

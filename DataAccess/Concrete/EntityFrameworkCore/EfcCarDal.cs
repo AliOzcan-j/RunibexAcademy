@@ -22,19 +22,35 @@ namespace DataAccess.Concrete.EntityFrameworkCore
                              select new CarDetailDto()
                              {
                                  BrandName = b.Name,
-                                 ModelName = m.Name,
+                                 ModelName = $"{m.NamePrefix} {m.NameSuffix}",
                                  ColorName = co.Name,
                                  FuelType = ft.Name,
                                  DailyPrice = c.DailyPrice,
                                  Transmission = c.Transmission == false ? "Manual" : "Automatic",
                                  Milage = c.MilageLimit == true ? "Limited" : "Limitless",
-                                 Description = $"{co.Name} {ft.Name} {b.Name} {m.Name}"
+                                 Description = $"{co.Name} {ft.Name} {b.Name} {m.NamePrefix} {m.NameSuffix}"
                              };
                 return filter == null
                     ? result.ToList()
                     : result.Where(filter).ToList();
             }
         }
+
+        //public new void Add(Car car)
+        //{
+        //    using (AcademyContext context = new AcademyContext())
+        //    {
+        //        var model = context.Models
+        //            .Include(x => x.Brand)
+        //            .Include(x => x.Color)
+        //            .Include(x => x.FuelTypes)
+        //            .Single(x => x.Id == car.ModelId && x.BrandId == car.);
+        //        car.Model = model;
+
+        //        model.Brand.Cars.Add(car);
+        //        context.SaveChanges();
+        //    }
+        //}
 
         public new bool Delete(Car car)
         {

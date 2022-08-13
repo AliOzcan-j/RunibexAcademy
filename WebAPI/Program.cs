@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using Business.Abstract;
 using Business.Concrete;
 using Business.DependencyResolvers;
+using Business.Extensions.MappingProfiles;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new AutofacBusinessModule()));
+builder.Services.AddAutoMapper(typeof(EntityMappingProfile));
 
 builder.Services.AddControllers();
 
@@ -53,9 +55,7 @@ builder.Services.AddSwaggerGen(options =>
 //    options.UseMySql(builder.Configuration.GetConnectionString("Default"), 
 //        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default")));
 //});
-builder.Services.AddSingleton<ICarDal, EfcCarDal>();
-builder.Services.AddSingleton<ICarService, CarManager>();
-//builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 
 var app = builder.Build();
 

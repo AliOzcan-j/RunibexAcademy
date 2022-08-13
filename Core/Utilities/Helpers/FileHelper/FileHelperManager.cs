@@ -1,5 +1,4 @@
 ﻿using Core.Utilities.Business.Concrete;
-using Core.Utilities.Helpers.Abstract;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Utilities.Helpers.Concrete
+namespace Core.Utilities.Helpers.FileHelper
 {
     public class FileHelperManager : IFileHelper
     {

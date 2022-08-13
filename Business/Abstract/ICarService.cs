@@ -8,6 +8,7 @@ namespace Business.Abstract
 {
     public interface ICarService : IEntityServiceBase<Car>
     {
+        IDataResult<List<Car>> GetSupplierId(int id);
         IDataResult<List<Car>> GetBrandId(int id);
         IDataResult<List<Car>> GetModelId(int id);
         IDataResult<List<Car>> GetColorId(int id);

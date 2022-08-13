@@ -10,6 +10,7 @@ namespace Entities.Concrete
         public string Address { get; set; }
         public string Postcode { get; set; }
         public User User { get; set; }
+        public List<Car> Cars { get; set; }
     }
 
 

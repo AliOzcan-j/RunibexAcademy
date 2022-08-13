@@ -3,6 +3,7 @@ using System;
 using DataAccess.Concrete.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(AcademyContext))]
-    partial class AcademyContextModelSnapshot : ModelSnapshot
+    [Migration("20220813144605_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -229,23 +231,11 @@ namespace DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("BrandId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ModelYear")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(15)");
-
-                    b.Property<string>("NamePrefix")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("NameSuffix")
                         .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BrandId");
 
                     b.ToTable("Models");
                 });
@@ -673,17 +663,6 @@ namespace DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Entities.Concrete.Model", b =>
-                {
-                    b.HasOne("Entities.Concrete.Brand", "Brand")
-                        .WithMany("Models")
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Brand");
-                });
-
             modelBuilder.Entity("Entities.Concrete.Payment", b =>
                 {
                     b.HasOne("Entities.Concrete.CreditCard", "CreditCard")
@@ -786,8 +765,6 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Entities.Concrete.Brand", b =>
                 {
                     b.Navigation("Cars");
-
-                    b.Navigation("Models");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Car", b =>

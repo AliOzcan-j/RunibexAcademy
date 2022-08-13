@@ -43,6 +43,10 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAllWithoutTracker());
         }
 
+        public IDataResult<List<Car>> GetSupplierId(int id)
+        {
+            return new SuccessDataResult<List<Car>>(_carDal.GetAllWithoutTracker(x => x.SupplierId == id));
+        }
         public IDataResult<List<Car>> GetBrandId(int id)
         {
             return new SuccessDataResult<List<Car>>(_carDal.GetAllWithoutTracker(x => x.BrandId == id));

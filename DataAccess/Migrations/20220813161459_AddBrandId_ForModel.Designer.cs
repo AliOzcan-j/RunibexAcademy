@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(AcademyContext))]
-    [Migration("20220721143016_Initial")]
-    partial class Initial
+    [Migration("20220813161459_AddBrandId_ForModel")]
+    partial class AddBrandId_ForModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,21 +20,6 @@ namespace DataAccess.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("ColorModel", b =>
-                {
-                    b.Property<int>("ColorsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ModelsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ColorsId", "ModelsId");
-
-                    b.HasIndex("ModelsId");
-
-                    b.ToTable("ColorModel");
-                });
 
             modelBuilder.Entity("Entities.Concrete.Brand", b =>
                 {
@@ -70,16 +55,20 @@ namespace DataAccess.Migrations
                     b.Property<int>("FuelTypeId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false);
 
-                    b.Property<string>("Milage")
-                        .IsRequired()
-                        .HasColumnType("varchar(15)");
+                    b.Property<bool?>("MilageLimit")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
 
                     b.Property<int>("ModelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
                     b.Property<bool>("Transmission")
@@ -94,6 +83,8 @@ namespace DataAccess.Migrations
                     b.HasIndex("FuelTypeId");
 
                     b.HasIndex("ModelId");
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("Cars");
                 });
@@ -166,15 +157,27 @@ namespace DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("CardHolderName")
+                    b.Property<byte[]>("CardHolderNameHash")
                         .IsRequired()
                         .HasColumnType("varbinary(500)");
 
-                    b.Property<byte[]>("CardNumber")
+                    b.Property<byte[]>("CardHolderNameSalt")
                         .IsRequired()
                         .HasColumnType("varbinary(500)");
 
-                    b.Property<byte[]>("ExpirationDate")
+                    b.Property<byte[]>("CardNumberHash")
+                        .IsRequired()
+                        .HasColumnType("varbinary(500)");
+
+                    b.Property<byte[]>("CardNumberSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(500)");
+
+                    b.Property<byte[]>("ExpirationDateHash")
+                        .IsRequired()
+                        .HasColumnType("varbinary(500)");
+
+                    b.Property<byte[]>("ExpirationDateSalt")
                         .IsRequired()
                         .HasColumnType("varbinary(500)");
 
@@ -404,19 +407,185 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("FuelTypeModel", b =>
+            modelBuilder.Entity("Entities.DTOs.CarDetailDto", b =>
                 {
-                    b.Property<int>("FuelTypesId")
+                    b.Property<string>("BrandName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ColorName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("DailyPrice")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FuelType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Milage")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ModelName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Transmission")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("CarDetailDto", null, t => t.ExcludeFromMigrations());
+                });
+
+            modelBuilder.Entity("Entities.DTOs.CarImageListDto", b =>
+                {
+                    b.Property<int>("CarId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ModelsId")
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("carImageListDtos", null, t => t.ExcludeFromMigrations());
+                });
+
+            modelBuilder.Entity("Entities.DTOs.CreditCardForStoreDto", b =>
+                {
+                    b.Property<string>("CardHolderName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ExpirationMonth")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ExpirationYear")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("CreditCardForStoreDto", null, t => t.ExcludeFromMigrations());
+                });
+
+            modelBuilder.Entity("Entities.DTOs.PaymentDetailDto", b =>
+                {
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("RentalId")
                         .HasColumnType("int");
 
-                    b.HasKey("FuelTypesId", "ModelsId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("ModelsId");
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.ToTable("FuelTypeModel");
+                    b.ToTable("PaymentDetailDto", null, t => t.ExcludeFromMigrations());
+                });
+
+            modelBuilder.Entity("Entities.DTOs.RentalDetailDto", b =>
+                {
+                    b.Property<string>("CarDetail")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("Payment")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<DateTime?>("RentDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("SupplierName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("isReturned")
+                        .HasColumnType("tinyint(1)");
+
+                    b.ToTable("RentalDetailDto", null, t => t.ExcludeFromMigrations());
+                });
+
+            modelBuilder.Entity("Entities.DTOs.UserDetailDto", b =>
+                {
+                    b.Property<string>("ContactNumber")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool?>("Stasus")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("UserDetailDto", null, t => t.ExcludeFromMigrations());
+                });
+
+            modelBuilder.Entity("Entities.DTOs.UserForLoginDto", b =>
+                {
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("UserForLoginDto", null, t => t.ExcludeFromMigrations());
+                });
+
+            modelBuilder.Entity("Entities.DTOs.UserForRegisterDto", b =>
+                {
+                    b.Property<string>("ContactNumber")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.ToTable("UserForRegisterDto", null, t => t.ExcludeFromMigrations());
                 });
 
             modelBuilder.Entity("OperationClaimUser", b =>
@@ -432,21 +601,6 @@ namespace DataAccess.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("OperationClaimUser");
-                });
-
-            modelBuilder.Entity("ColorModel", b =>
-                {
-                    b.HasOne("Entities.Concrete.Color", null)
-                        .WithMany()
-                        .HasForeignKey("ColorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entities.Concrete.Model", null)
-                        .WithMany()
-                        .HasForeignKey("ModelsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Entities.Concrete.Car", b =>
@@ -470,8 +624,14 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("Entities.Concrete.Model", "Model")
-                        .WithMany()
+                        .WithMany("Cars")
                         .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entities.Concrete.Supplier", "Supplier")
+                        .WithMany("Cars")
+                        .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -482,6 +642,8 @@ namespace DataAccess.Migrations
                     b.Navigation("FuelType");
 
                     b.Navigation("Model");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Entities.Concrete.CarImage", b =>
@@ -601,21 +763,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("FuelTypeModel", b =>
-                {
-                    b.HasOne("Entities.Concrete.FuelType", null)
-                        .WithMany()
-                        .HasForeignKey("FuelTypesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entities.Concrete.Model", null)
-                        .WithMany()
-                        .HasForeignKey("ModelsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("OperationClaimUser", b =>
                 {
                     b.HasOne("Entities.Concrete.OperationClaim", null)
@@ -670,10 +817,20 @@ namespace DataAccess.Migrations
                     b.Navigation("Cars");
                 });
 
+            modelBuilder.Entity("Entities.Concrete.Model", b =>
+                {
+                    b.Navigation("Cars");
+                });
+
             modelBuilder.Entity("Entities.Concrete.Payment", b =>
                 {
                     b.Navigation("Rental")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Supplier", b =>
+                {
+                    b.Navigation("Cars");
                 });
 
             modelBuilder.Entity("Entities.Concrete.User", b =>

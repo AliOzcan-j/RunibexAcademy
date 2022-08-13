@@ -96,7 +96,10 @@ namespace DataAccess.Concrete.EntityFrameworkCore
             #endregion
 
             #region ModelModel
-            modelBuilder.Entity<Model>().Property(x => x.Name).HasColumnType("varchar(50)");
+            modelBuilder.Entity<Model>().Property(x => x.NamePrefix).HasColumnType("varchar(50)");
+            modelBuilder.Entity<Model>().Property(x => x.NameSuffix).HasColumnType("varchar(50)");
+            modelBuilder.Entity<Model>().Property(x => x.ModelYear).HasColumnType("varchar(15)");
+            modelBuilder.Entity<Model>().HasOne(x => x.Brand).WithMany(x => x.Models).HasForeignKey(x => x.BrandId);
             #endregion
 
             #region FuelTypeModel
@@ -135,6 +138,11 @@ namespace DataAccess.Concrete.EntityFrameworkCore
             modelBuilder.Entity<Car>().Property(x => x.MilageLimit).HasDefaultValue(true);
             modelBuilder.Entity<Car>().Property(x => x.DailyPrice).HasPrecision(18, 2);
             modelBuilder.Entity<Car>().Property(x => x.IsDeleted).HasDefaultValue(false);
+            modelBuilder.Entity<Car>().HasOne(x => x.Supplier).WithMany(x => x.Cars).HasForeignKey(x => x.SupplierId);
+            modelBuilder.Entity<Car>().HasOne(x => x.Brand).WithMany(x => x.Cars).HasForeignKey(x => x.BrandId);
+            modelBuilder.Entity<Car>().HasOne(x => x.Model).WithMany(x => x.Cars).HasForeignKey(x => x.ModelId);
+            modelBuilder.Entity<Car>().HasOne(x => x.Color).WithMany(x => x.Cars).HasForeignKey(x => x.ColorId);
+            modelBuilder.Entity<Car>().HasOne(x => x.FuelType).WithMany(x => x.Cars).HasForeignKey(x => x.FuelTypeId);
             #endregion
 
             #region BrandModel

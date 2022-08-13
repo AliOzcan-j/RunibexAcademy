@@ -24,7 +24,7 @@ namespace Business.Concrete
 
         public IResult Add(Model entity)
         {
-            IResult result = BusinessRules.Run(CheckIfExists(entity.Name));
+            IResult result = BusinessRules.Run(CheckIfExists(entity.NameSuffix));
 
             if (result != null)
             {
@@ -45,7 +45,6 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Model>>(_modelDal.GetAllWithoutTracker());
         }
-
         public IDataResult<Model> GetByBrandId(int id)
         {
             return new SuccessDataResult<Model>(_modelDal.Get(m => m.BrandId == id));
@@ -58,7 +57,7 @@ namespace Business.Concrete
 
         public IDataResult<Model> GetByName(string name)
         {
-            return new SuccessDataResult<Model>(_modelDal.Get(m => m.Name == name));
+            return new SuccessDataResult<Model>(_modelDal.Get(m => $"{m.NamePrefix} {m.NameSuffix}" == name));
         }
 
         public IResult Update(Model entity)

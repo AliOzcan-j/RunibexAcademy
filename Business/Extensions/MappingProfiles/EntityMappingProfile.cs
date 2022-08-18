@@ -14,6 +14,7 @@ namespace Business.Extensions.MappingProfiles
         public EntityMappingProfile()
         {
             CreateMap<Car, CarDto>().ReverseMap();
+            CreateMap<Model, ModelDto>().ReverseMap();
         }
     }
 }

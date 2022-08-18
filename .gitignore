@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Core/CrossCuttingConcerns/Caching/Redis/StolenStuff.cs
+/Core/CrossCuttingConcerns/Caching/Redis/ServiceStackRedisManager.cs

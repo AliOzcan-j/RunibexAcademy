@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Caching;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -18,10 +20,12 @@ namespace Business.Concrete
     public class CarManager : ICarService
     {
         ICarDal _carDal;
+        ICacheManager _cacheManager;
 
-        public CarManager(ICarDal carDal)
+        public CarManager(ICarDal carDal, ICacheManager cacheManager)
         {
             _carDal = carDal;
+            _cacheManager = cacheManager;
         }
 
         [ValidationAspect(typeof(CarValidator))]
@@ -31,6 +35,7 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        [CacheRemoveAspect("IEntityServiceBase.Get")]
         public IResult Delete(Car entity)
         {
             return _carDal.Delete(entity) == true 
@@ -38,9 +43,15 @@ namespace Business.Concrete
                 : new ErrorResult();
         }
 
+        //[CacheAspect(typeof(DataResult<List<Car>>))]
         public IDataResult<List<Car>> GetAll()
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAllWithoutTracker());
+            var result = _carDal.GetAll();
+            if (result.Any())
+            {
+                return new SuccessDataResult<List<Car>>(result);
+            }
+            return new ErrorDataResult<List<Car>>("no record exists");
         }
 
         public IDataResult<List<Car>> GetSupplierId(int id)
@@ -49,12 +60,23 @@ namespace Business.Concrete
         }
         public IDataResult<List<Car>> GetBrandId(int id)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAllWithoutTracker(x => x.BrandId == id));
+            var result = _carDal.GetAllWithoutTracker(x => x.Model.BrandId == id);
+            if (result.Any())
+            {
+                return new SuccessDataResult<List<Car>>(result);
+            }
+            return new ErrorDataResult<List<Car>>();
         }
 
+        [CacheAspect(typeof(DataResult<Car>))]
         public IDataResult<Car> GetById(int id)
         {
-            return new SuccessDataResult<Car>(_carDal.Get(c => c.Id == id));
+            var result = _carDal.Get(c => c.Id == id);
+            if (result != null)
+            {
+                return new SuccessDataResult<Car>(result);
+            }
+            return new ErrorDataResult<Car>("doesnt exists");
         }
 
         public IDataResult<List<CarDetailDto>> GetCarDetails(Expression<Func<CarDetailDto, bool>> filter = null)
@@ -77,6 +99,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAllWithoutTracker( x => x.ModelId == id));
         }
 
+        [CacheRemoveAspect("IEntityServiceBase.Get")]
         public IResult Update(Car entity)
         {
             _carDal.Update(entity);

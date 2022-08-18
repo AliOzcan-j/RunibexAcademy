@@ -9,6 +9,7 @@ namespace Core.Utilities.Results.Concrete
 {
     public class DataResult<T> : Result, IDataResult<T>
     {
+
         public DataResult(T data, bool success, string message) : base(success, message)
         {
             Data = data;
@@ -17,6 +18,10 @@ namespace Core.Utilities.Results.Concrete
         public DataResult(T data, bool success) : base(success)
         {
             Data = data;
+        }
+
+        public DataResult()
+        {
         }
 
         public T Data { get; set; }

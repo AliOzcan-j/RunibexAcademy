@@ -29,7 +29,7 @@ namespace DataAccess.Concrete.EntityFrameworkCore
                              select new RentalDetailDto()
                              {
                                  UserName = $"{r.User.FirstName} {r.User.LastName}",
-                                 CarDetail = $"{r.Car.FuelType.Name} {r.Car.Color.Name} {r.Car.Brand.Name} {r.Car.Model.NamePrefix} {r.Car.Model.NameSuffix}",
+                                 CarDetail = $"{r.Car.FuelType.Name} {r.Car.Color.Name} {r.Car.Model.Brand.Name} {r.Car.Model.NamePrefix} {r.Car.Model.NameSuffix}",
                                  SupplierName = $"{r.Supplier.CompanyName}",
                                  Payment = r.Payment.Amount,
                                  RentDate = r.RentDate,

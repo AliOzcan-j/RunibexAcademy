@@ -1,4 +1,5 @@
 ﻿using Castle.DynamicProxy;
+using System.Diagnostics;
 
 namespace Core.Utilities.Interceptors
 {
@@ -20,7 +21,7 @@ namespace Core.Utilities.Interceptors
             {
                 isSuccess = false;
                 OnException(invocation, e);
-                Console.WriteLine(e.Message);
+                Debug.WriteLine(e.Message);
                 //throw;
             }
             finally

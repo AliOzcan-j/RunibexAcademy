@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,7 +56,7 @@ namespace DataAccess.Concrete.EntityFrameworkCore
                 var connectionString = configuration.GetConnectionString("Default");
 
                 optionsBuilder
-                .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
+                .LogTo(message => Debug.WriteLine(message), Microsoft.Extensions.Logging.LogLevel.Information)
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), options =>
                  {
                      options.EnableStringComparisonTranslations();
@@ -139,7 +140,7 @@ namespace DataAccess.Concrete.EntityFrameworkCore
             modelBuilder.Entity<Car>().Property(x => x.DailyPrice).HasPrecision(18, 2);
             modelBuilder.Entity<Car>().Property(x => x.IsDeleted).HasDefaultValue(false);
             modelBuilder.Entity<Car>().HasOne(x => x.Supplier).WithMany(x => x.Cars).HasForeignKey(x => x.SupplierId);
-            modelBuilder.Entity<Car>().HasOne(x => x.Brand).WithMany(x => x.Cars).HasForeignKey(x => x.BrandId);
+            //modelBuilder.Entity<Car>().HasOne(x => x.Brand).WithMany(x => x.Cars).HasForeignKey(x => x.BrandId);
             modelBuilder.Entity<Car>().HasOne(x => x.Model).WithMany(x => x.Cars).HasForeignKey(x => x.ModelId);
             modelBuilder.Entity<Car>().HasOne(x => x.Color).WithMany(x => x.Cars).HasForeignKey(x => x.ColorId);
             modelBuilder.Entity<Car>().HasOne(x => x.FuelType).WithMany(x => x.Cars).HasForeignKey(x => x.FuelTypeId);

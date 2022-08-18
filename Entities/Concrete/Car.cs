@@ -7,7 +7,6 @@ namespace Entities.Concrete
     {
         public int Id { get; set; }
         public int SupplierId { get; set; }
-        public int BrandId { get; set; }
         public int ModelId { get; set; }
         public int ColorId { get; set; }
         public int FuelTypeId { get; set; }
@@ -15,7 +14,6 @@ namespace Entities.Concrete
         public bool Transmission { get; set; }
         public decimal DailyPrice { get; set; }
         public bool? IsDeleted { get; set; }
-        public Brand Brand { get; set; }
         public Model Model { get; set; }
         public Color Color { get; set; }
         public FuelType FuelType { get; set; }

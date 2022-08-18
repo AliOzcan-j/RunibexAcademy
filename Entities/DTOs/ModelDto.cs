@@ -1,17 +1,17 @@
 ﻿using Core.Entities.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Entities.Concrete
+namespace Entities.DTOs
 {
-    public class Model : IEntity
+    public class ModelDto : IDto
     {
-        public int Id { get; set; }
         public string NamePrefix { get; set; }
         public string? NameSuffix { get; set; }
         public string ModelYear { get; set; }
         public int BrandId { get; set; }
-        public Brand Brand { get; set; }
-        public List<Car> Cars { get; set; } = new List<Car>();
     }
-
-
 }

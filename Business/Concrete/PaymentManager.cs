@@ -50,17 +50,6 @@ namespace Business.Concrete
         }
 
         [CacheAspect(typeof(DataResult<Payment>))]
-        public IDataResult<Payment> GetByCreditCardtId(int id)
-        {
-            var result = _paymentDal.Get(p => p.CreditCardId == id);
-            if (result != null)
-            {
-                return new SuccessDataResult<Payment>(result);
-            }
-            return new ErrorDataResult<Payment>();
-        }
-
-        [CacheAspect(typeof(DataResult<Payment>))]
         public IDataResult<Payment>? GetById(int id)
         {
             var result = _paymentDal.Get(p => p.Id == id);

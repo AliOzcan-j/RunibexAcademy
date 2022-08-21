@@ -25,7 +25,6 @@ namespace DataAccess.Concrete.EntityFrameworkCore
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<OperationClaim> OperationClaims { get; set; }
-        public DbSet<CreditCard> CreditCards { get; set; }
         public DbSet<Currency> Currencies { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Car> Cars { get; set; }
@@ -37,7 +36,6 @@ namespace DataAccess.Concrete.EntityFrameworkCore
         public DbSet<Rental> Rentals { get; set; }
         public DbSet<CarDetailDto> CarDetailDtos { get; set; }
         public DbSet<RentalDetailDto> RentalDetailDtos { get; set; }
-        public DbSet<CreditCardForStoreDto> CreditCardForStoreDtos { get; set; }
         public DbSet<PaymentDetailDto> PaymentDetailDtos { get; set; }
         public DbSet<UserDetailDto> UserDetailDtos { get; set; }
         public DbSet<UserForLoginDto> UserForLoginDtos { get; set; }
@@ -112,15 +110,6 @@ namespace DataAccess.Concrete.EntityFrameworkCore
             modelBuilder.Entity<Currency>().Property(x => x.IsoCode).HasColumnType("varchar(10)");
             #endregion
 
-            #region CreditCardModel
-            modelBuilder.Entity<CreditCard>().Property(x => x.CardNumberSalt).HasColumnType("varbinary(500)");
-            modelBuilder.Entity<CreditCard>().Property(x => x.CardNumberHash).HasColumnType("varbinary(500)");
-            modelBuilder.Entity<CreditCard>().Property(x => x.ExpirationDateSalt).HasColumnType("varbinary(500)");
-            modelBuilder.Entity<CreditCard>().Property(x => x.ExpirationDateHash).HasColumnType("varbinary(500)");
-            modelBuilder.Entity<CreditCard>().Property(x => x.CardHolderNameSalt).HasColumnType("varbinary(500)");
-            modelBuilder.Entity<CreditCard>().Property(x => x.CardHolderNameHash).HasColumnType("varbinary(500)");
-            #endregion
-
             #region CountryModel
             modelBuilder.Entity<Country>().Property(x => x.Name).HasColumnType("nvarchar(50)");
             modelBuilder.Entity<Country>().Property(x => x.CountryCode).HasColumnType("varchar(10)");
@@ -153,7 +142,6 @@ namespace DataAccess.Concrete.EntityFrameworkCore
             #region DtoModels
             modelBuilder.Entity<CarDetailDto>().HasNoKey().ToTable(nameof(CarDetailDto), x => x.ExcludeFromMigrations());
             modelBuilder.Entity<RentalDetailDto>().HasNoKey().ToTable(nameof(RentalDetailDto), x => x.ExcludeFromMigrations());
-            modelBuilder.Entity<CreditCardForStoreDto>().HasNoKey().ToTable(nameof(CreditCardForStoreDto), x => x.ExcludeFromMigrations());
             modelBuilder.Entity<PaymentDetailDto>().HasNoKey().ToTable(nameof(PaymentDetailDto), x => x.ExcludeFromMigrations());
             modelBuilder.Entity<UserDetailDto>().HasNoKey().ToTable(nameof(UserDetailDto), x => x.ExcludeFromMigrations());
             modelBuilder.Entity<UserForLoginDto>().HasNoKey().ToTable(nameof(UserForLoginDto), x => x.ExcludeFromMigrations());

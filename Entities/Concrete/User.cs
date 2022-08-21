@@ -22,7 +22,6 @@ namespace Entities.Concrete
         public Supplier Supplier { get; set; }
         public Country Country { get; set; }
         public List<OperationClaim> OperationClaims { get; set; }
-        public List<CreditCard> CreditCards { get; set; }
         public List<Payment> Payments { get; set; }
     }
 }

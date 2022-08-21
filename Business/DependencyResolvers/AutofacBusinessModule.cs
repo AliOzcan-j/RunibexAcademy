@@ -40,9 +40,6 @@ namespace Business.DependencyResolvers
             builder.RegisterType<CountryManager>().As<ICountryService>().SingleInstance();
             builder.RegisterType<EfcCountryDal>().As<ICountryDal>().SingleInstance();
 
-            builder.RegisterType<CreditCardManager>().As<ICreditCardService>().SingleInstance();
-            builder.RegisterType<EfcCreditCardDal>().As<ICreditCardDal>().SingleInstance();
-
             builder.RegisterType<CurrencyManager>().As<ICurrencyService>().SingleInstance();
             builder.RegisterType<EfcCurrencyDal>().As<ICurrencyDal>().SingleInstance();
 

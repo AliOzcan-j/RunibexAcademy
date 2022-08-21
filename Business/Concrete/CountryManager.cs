@@ -1,4 +1,7 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Aspects.Autofac.Caching;
+using Core.Utilities.Business.Concrete;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -22,39 +25,88 @@ namespace Business.Concrete
 
         public IResult Add(Country entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Name));
+
+            if (result != null)
+            {
+                return result;
+            }
+
             _countryDal.Add(entity);
             return new SuccessResult();
         }
 
+        [CacheRemoveAspect("ICountryService.Get")]
         public IResult Delete(Country entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Name));
+
+            if (result == null)
+            {
+                return result;
+            }
+
             _countryDal.Delete(entity);
             return new SuccessResult();
         }
 
+        [CacheAspect(typeof(DataResult<List<Country>>))]
         public IDataResult<List<Country>> GetAll()
         {
             return new SuccessDataResult<List<Country>>(_countryDal.GetAllWithoutTracker());
         }
 
+        [CacheAspect(typeof(DataResult<Country>))]
         public IDataResult<Country>? GetById(int id)
         {
-            return new SuccessDataResult<Country>(_countryDal.Get(c => c.Id == id));
+            var result = _countryDal.Get(c => c.Id == id);
+            if (result != null)
+            {
+                return new SuccessDataResult<Country>(result);
+            }
+            return new ErrorDataResult<Country>();
         }
-
+        [CacheAspect(typeof(DataResult<Country>))]
         public IDataResult<Country> GetByIsoCode(string isoCode)
         {
-            return new SuccessDataResult<Country>(_countryDal.Get(c => c.IsoCode.Equals(isoCode)));
+            var result = _countryDal.Get(c => c.IsoCode.Equals(isoCode));
+            if (result != null)
+            {
+                return new SuccessDataResult<Country>(result);
+            }
+            return new ErrorDataResult<Country>();
         }
 
+        [CacheAspect(typeof(DataResult<Country>))]
         public IDataResult<Country>? GetByName(string name)
         {
-            return new SuccessDataResult<Country>(_countryDal.Get(c => c.Name.Equals(name)));
+            var result = _countryDal.Get(c => c.Name.Equals(name));
+            if (result != null)
+            {
+                return new SuccessDataResult<Country>(result);
+            }
+            return new ErrorDataResult<Country>();
         }
-
+        [CacheRemoveAspect("ICountryService.Get")]
         public IResult Update(Country entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Name));
+
+            if (result == null)
+            {
+                return result;
+            }
             _countryDal.Update(entity);
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfExists(string name)
+        {
+            var result = GetByName(name);
+            if (result.Success)
+            {
+                return new ErrorResult(Messages.ThisRecordExists);
+            }
             return new SuccessResult();
         }
     }

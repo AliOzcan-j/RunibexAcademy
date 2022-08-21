@@ -35,7 +35,7 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        [CacheRemoveAspect("IEntityServiceBase.Get")]
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Delete(Car entity)
         {
             return _carDal.Delete(entity) == true 
@@ -43,22 +43,24 @@ namespace Business.Concrete
                 : new ErrorResult();
         }
 
-        //[CacheAspect(typeof(DataResult<List<Car>>))]
         public IDataResult<List<Car>> GetAll()
         {
-            var result = _carDal.GetAll();
-            if (result.Any())
-            {
-                return new SuccessDataResult<List<Car>>(result);
-            }
-            return new ErrorDataResult<List<Car>>("no record exists");
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll());
         }
 
-        public IDataResult<List<Car>> GetSupplierId(int id)
+        [CacheAspect(typeof(DataResult<List<Car>>))]
+        public IDataResult<List<Car>> GetBySupplierId(int id)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAllWithoutTracker(x => x.SupplierId == id));
+            var result = _carDal.GetAllWithoutTracker(x => x.SupplierId == id);
+            if (result.Any())
+            {
+                return new SuccessDataResult<List<Car>>();
+            }
+            return new ErrorDataResult<List<Car>>();
         }
-        public IDataResult<List<Car>> GetBrandId(int id)
+
+        [CacheAspect(typeof(DataResult<List<Car>>))]
+        public IDataResult<List<Car>> GetByBrandId(int id)
         {
             var result = _carDal.GetAllWithoutTracker(x => x.Model.BrandId == id);
             if (result.Any())
@@ -79,31 +81,55 @@ namespace Business.Concrete
             return new ErrorDataResult<Car>("doesnt exists");
         }
 
-        public IDataResult<List<CarDetailDto>> GetCarDetails(Expression<Func<CarDetailDto, bool>> filter = null)
+        [CacheAspect(typeof(DataResult<List<Car>>))]
+        public IDataResult<List<Car>> GetByColorId(int id)
         {
-            return new SuccessDataResult<List<CarDetailDto>>(_carDal.GetCarDetails(filter));
+            var result = _carDal.GetAllWithoutTracker(x => x.ColorId == id);
+            if (result.Any())
+            {
+                return new SuccessDataResult<List<Car>>(result);
+            }
+            return new ErrorDataResult<List<Car>>();
         }
 
-        public IDataResult<List<Car>> GetColorId(int id)
+        [CacheAspect(typeof(DataResult<List<Car>>))]
+        public IDataResult<List<Car>> GetByFuleTypeId(int id)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAllWithoutTracker(x => x.ColorId == id));
+            var result = _carDal.GetAllWithoutTracker(x => x.FuelTypeId == id);
+            if (result.Any())
+            {
+                return new SuccessDataResult<List<Car>>(result);
+            }
+            return new ErrorDataResult<List<Car>>();
         }
 
-        public IDataResult<List<Car>> GetFuleTypeId(int id)
+        [CacheAspect(typeof(DataResult<List<Car>>))]
+        public IDataResult<List<Car>> GetByModelId(int id)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAllWithoutTracker( x => x.FuelTypeId == id));
+            var result = _carDal.GetAllWithoutTracker(x => x.ModelId == id);
+            if (result.Any())
+            {
+                return new SuccessDataResult<List<Car>>(result);
+            }
+            return new ErrorDataResult<List<Car>>();
         }
 
-        public IDataResult<List<Car>> GetModelId(int id)
-        {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAllWithoutTracker( x => x.ModelId == id));
-        }
-
-        [CacheRemoveAspect("IEntityServiceBase.Get")]
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Update(Car entity)
         {
             _carDal.Update(entity);
             return new SuccessResult();
+        }
+
+        [CacheAspect(typeof(DataResult<List<CarDetailDto>>))]
+        public IDataResult<List<CarDetailDto>> GetCarDetails(Expression<Func<CarDetailDto, bool>> filter = null)
+        {
+            var result = _carDal.GetCarDetails(filter);
+            if (result.Any())
+            {
+                return new SuccessDataResult<List<CarDetailDto>>(result);
+            }
+            return new ErrorDataResult<List<CarDetailDto>>();
         }
     }
 }

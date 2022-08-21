@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
 using Core.Utilities.Business.Concrete;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -35,37 +36,65 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        [CacheRemoveAspect("IColorService.Get")]
         public IResult Delete(Color entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Name));
+
+            if (result == null)
+            {
+                return result;
+            }
+
             _colorDal.Delete(entity);
             return new SuccessResult();
         }
 
+        [CacheAspect(typeof(DataResult<List<Color>>))]
         public IDataResult<List<Color>> GetAll()
         {
             return new SuccessDataResult<List<Color>>(_colorDal.GetAllWithoutTracker());
         }
 
+        [CacheAspect(typeof(DataResult<Color>))]
         public IDataResult<Color> GetByName(string name)
         {
-            return new SuccessDataResult<Color>(_colorDal.Get(c => c.Name == name));
+            var result = _colorDal.Get(c => c.Name == name);
+            if (result != null)
+            {
+                return new SuccessDataResult<Color>(result);
+            }
+            return new ErrorDataResult<Color>();
         }
 
+        [CacheAspect(typeof(DataResult<Color>))]
         public IDataResult<Color> GetById(int id)
         {
-            return new SuccessDataResult<Color>(_colorDal.Get(c => c.Id == id));
+            var result = _colorDal.Get(c => c.Id == id);
+            if (result != null)
+            {
+                return new SuccessDataResult<Color>(result);
+            }
+            return new ErrorDataResult<Color>();
         }
 
+        [CacheRemoveAspect("IColorService.Get")]
         public IResult Update(Color entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Name));
+
+            if (result == null)
+            {
+                return result;
+            }
             _colorDal.Update(entity);
             return new SuccessResult();
         }
 
         private IResult CheckIfExists(string name)
         {
-            var result = GetByName(name).Data;
-            if (result != null)
+            var result = GetByName(name);
+            if (result.Success)
             {
                 return new ErrorResult(Messages.ThisRecordExists);
             }

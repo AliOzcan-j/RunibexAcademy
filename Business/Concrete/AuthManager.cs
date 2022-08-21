@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
 using Core.Utilities.Business.Concrete;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -23,6 +24,7 @@ namespace Business.Concrete
             _userService = userService;
         }
 
+        [CacheAspect(typeof(DataResult<User>))]
         public IDataResult<User> Login(UserForLoginDto userForLoginDto)
         {
             IResult result = BusinessRules.Run(CheckIfUserExists(userForLoginDto.Email));

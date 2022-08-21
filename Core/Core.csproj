@@ -22,4 +22,8 @@
     <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="8.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Utilities\Business\Abstract\" />
+  </ItemGroup>
+
 </Project>

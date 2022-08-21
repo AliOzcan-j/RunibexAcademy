@@ -10,7 +10,13 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-    public interface IBrandService : IEntityServiceBase<Brand>, IEntityServiceAddon<Brand>
+    public interface IBrandService
     {
+        IDataResult<List<Brand>> GetAll();
+        IResult Add(Brand entity);
+        IResult Update(Brand entity);
+        IResult Delete(Brand entity);
+        IDataResult<Brand>? GetById(int id);
+        IDataResult<Brand>? GetByName(string name);
     }
 }

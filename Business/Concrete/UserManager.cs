@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
+using Core.Utilities.Business.Concrete;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -27,8 +29,14 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        [CacheRemoveAspect("IUserService.Get")]
         public IResult Delete(User entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Email));
+            if (result == null)
+            {
+                return result;
+            }
             _userDal.Delete(entity);
             return new SuccessResult();
         }
@@ -38,6 +46,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<User>>(_userDal.GetAllWithoutTracker());
         }
 
+        [CacheAspect(typeof(DataResult<User>))]
         public IDataResult<User> GetByEmail(string email)
         {
             var result = _userDal.Get(u => u.Email.Equals(email));
@@ -48,14 +57,36 @@ namespace Business.Concrete
             return new ErrorDataResult<User>(Messages.UserDoesntExists);
         }
 
+        [CacheAspect(typeof(DataResult<User>))]
         public IDataResult<User>? GetById(int id)
         {
-            return new SuccessDataResult<User>(_userDal.Get(u => u.Id == id));
+            var result = _userDal.Get(u => u.Id == id);
+            if (result != null)
+            {
+                return new SuccessDataResult<User>(result);
+            }
+            return new ErrorDataResult<User>();
         }
 
+        [CacheRemoveAspect("IUserService.Get")]
         public IResult Update(User entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Email));
+            if (result == null)
+            {
+                return result;
+            }
             _userDal.Update(entity);
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfExists(string email)
+        {
+            var result = _userDal.Get(x => x.Email.Equals(email));
+            if (result != null)
+            {
+                return new ErrorResult(Messages.UserAlreadyExists);
+            }
             return new SuccessResult();
         }
     }

@@ -27,8 +27,7 @@ namespace Core.Aspects.Autofac.Caching
 
         public override void Intercept(IInvocation invocation)
         {
-            var reflectType = invocation.Method.ReflectedType.Name;
-            var methodName = string.Format($"{invocation.Method.ReflectedType.Namespace}.{reflectType.Remove(reflectType.Length-2)}.{invocation.Method.Name}");//runtime da, cachelenen metodun namespace ve ismini alır
+            var methodName = string.Format($"{invocation.Method.ReflectedType.Namespace}.{invocation.Method.ReflectedType.Name}.{invocation.Method.Name}");//runtime da, cachelenen metodun namespace ve ismini alır
             var arguments = invocation.Arguments.ToList();//metod parametre alıyorsa onları listeye ekler
             var key = $"{methodName}({string.Join(",", arguments.Select(x => x?.ToString() ?? "<Null>"))})"; //metod ismi ve parametre, varsa, hepsini ekleyere bir key oluşturur
             //var type = invocation.Method.ReturnType.GenericTypeArguments.First();

@@ -1,4 +1,7 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Aspects.Autofac.Caching;
+using Core.Utilities.Business.Concrete;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -26,8 +29,14 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        [CacheRemoveAspect("ISupplierService.Get")]
         public IResult Delete(Supplier entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.CompanyName));
+            if (result == null)
+            {
+                return result;
+            }
             _supplierDal.Delete(entity);
             return new SuccessResult();
         }
@@ -37,24 +46,58 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Supplier>>(_supplierDal.GetAllWithoutTracker());
         }
 
+        [CacheAspect(typeof(DataResult<Supplier>))]
         public IDataResult<Supplier>? GetById(int id)
         {
-            return new SuccessDataResult<Supplier>(_supplierDal.Get(s => s.Id == id));
+            var result = _supplierDal.Get(s => s.Id == id);
+            if (result != null)
+            {
+                return new SuccessDataResult<Supplier>(result);
+            }
+            return new ErrorDataResult<Supplier>();
         }
 
+        [CacheAspect(typeof(DataResult<Supplier>))]
         public IDataResult<Supplier>? GetByName(string name)
         {
-            return new SuccessDataResult<Supplier>(_supplierDal.Get(s => s.CompanyName.Equals(name)));
+            var result = _supplierDal.Get(s => s.CompanyName.Equals(name));
+            if (result != null)
+            {
+                return new SuccessDataResult<Supplier>(result);
+            }
+            return new ErrorDataResult<Supplier>();
         }
 
+        [CacheAspect(typeof(DataResult<Supplier>))]
         public IDataResult<Supplier> GetByPostCode(string postCode)
         {
-            return new SuccessDataResult<Supplier>(_supplierDal.Get(s => s.Postcode.Equals(postCode)));
+            var result = _supplierDal.Get(s => s.Postcode.Equals(postCode));
+            if (result != null)
+            {
+                return new SuccessDataResult<Supplier>(result);
+            }
+            return new ErrorDataResult<Supplier>();
         }
 
+        [CacheRemoveAspect("ISupplierService.Get")]
         public IResult Update(Supplier entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.CompanyName));
+            if (result == null)
+            {
+                return result;
+            }
             _supplierDal.Update(entity);
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfExists(string name)
+        {
+            var result = _supplierDal.Get(x => x.CompanyName == name);
+            if (result != null)
+            {
+                return new ErrorResult(Messages.ThisRecordExists);
+            }
             return new SuccessResult();
         }
     }

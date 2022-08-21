@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
 using Core.Utilities.Business.Concrete;
 using Core.Utilities.Helpers.FileHelper;
 using Core.Utilities.Results.Abstract;
@@ -50,6 +51,7 @@ namespace Business.Concrete
 
         }
 
+        [CacheRemoveAspect("ICarImageService.Get")]
         public IResult Delete(CarImage carImage)
         {
             var dbObject = _carImageDal.Get(c => c.CarId == carImage.CarId && c.ImagePath == carImage.ImagePath);
@@ -67,6 +69,7 @@ namespace Business.Concrete
             return new ErrorResult();
         }
 
+        [CacheRemoveAspect("ICarImageService.Get")]
         public IResult Update(CarImage carImage, IFormFile file)
         {
             var dbObject = _carImageDal.Get(c => c.CarId == carImage.CarId && c.ImagePath == carImage.ImagePath);
@@ -89,6 +92,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll());
         }
 
+        [CacheAspect(typeof(DataResult<List<CarImage>>))]
         public IDataResult<List<CarImage>> GetByCarId(int id)
         {
             var result = BusinessRules.Run(CheckIfAnyImageExists(id));
@@ -102,6 +106,7 @@ namespace Business.Concrete
             }
         }
 
+        [CacheAspect(typeof(DataResult<CarImage>))]
         public IDataResult<CarImage> GetById(int id)
         {
             return new SuccessDataResult<CarImage>(_carImageDal.Get(i => i.Id == id));
@@ -139,6 +144,7 @@ namespace Business.Concrete
             return defaultImage;
         }
 
+        [CacheAspect(typeof(DataResult<List<CarImageListDto>>))]
         public IDataResult<List<CarImageListDto>> GetCarImageList(int id)
         {
             return new SuccessDataResult<List<CarImageListDto>>(_carImageDal.GetCarImageList(c => c.CarId == id));

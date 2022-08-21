@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
 using Core.Utilities.Business.Concrete;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -34,35 +35,64 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        [CacheRemoveAspect("IFuelTypeService.Get")]
         public IResult Delete(FuelType entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Name));
+
+            if (result == null)
+            {
+                return result;
+            }
             _fuelTypeDal.Delete(entity);
             return new SuccessResult();
         }
 
+        [CacheAspect(typeof(DataResult<List<FuelType>>))]
         public IDataResult<List<FuelType>> GetAll()
         {
             return new SuccessDataResult<List<FuelType>>(_fuelTypeDal.GetAllWithoutTracker());
         }
 
+        [CacheAspect(typeof(DataResult<FuelType>))]
         public IDataResult<FuelType> GetByName(string name)
         {
-            return new SuccessDataResult<FuelType>(_fuelTypeDal.Get(ft => ft.Name == name));
-        }
-        public IDataResult<FuelType> GetById(int id)
-        {
-            return new SuccessDataResult<FuelType>(_fuelTypeDal.Get(ft => ft.Id == id));
+            var result = _fuelTypeDal.Get(ft => ft.Name == name);
+            if (result != null)
+            {
+                return new SuccessDataResult<FuelType>(result);
+            }
+            return new ErrorDataResult<FuelType>();
         }
 
+        [CacheAspect(typeof(DataResult<FuelType>))]
+        public IDataResult<FuelType> GetById(int id)
+        {
+            var result = _fuelTypeDal.Get(ft => ft.Id == id);
+            if (result != null)
+            {
+                return new SuccessDataResult<FuelType>(result);
+            }
+            return new ErrorDataResult<FuelType>();
+        }
+
+        [CacheRemoveAspect("IFuelTypeService.Get")]
         public IResult Update(FuelType entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.Name));
+
+            if (result == null)
+            {
+                return result;
+            }
             _fuelTypeDal.Update(entity);
             return new SuccessResult();
         }
+
         private IResult CheckIfExists(string name)
         {
-            var result = GetByName(name).Data;
-            if (result != null)
+            var result = GetByName(name);
+            if (result.Success)
             {
                 return new ErrorResult(Messages.ThisRecordExists);
             }

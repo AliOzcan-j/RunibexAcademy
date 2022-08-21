@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
 using Core.Utilities.Business.Concrete;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -35,41 +36,75 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        [CacheRemoveAspect("IModelService.Get")]
         public IResult Delete(Model entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.NameSuffix));
+
+            if (result == null)
+            {
+                return result;
+            }
             _modelDal.Delete(entity);
             return new SuccessResult();
         }
 
+        [CacheAspect(typeof(DataResult<List<Model>>))]
         public IDataResult<List<Model>> GetAll()
         {
             return new SuccessDataResult<List<Model>>(_modelDal.GetAllWithoutTracker());
         }
+
+        [CacheAspect(typeof(DataResult<Model>))]
         public IDataResult<Model> GetByBrandId(int id)
         {
-            return new SuccessDataResult<Model>(_modelDal.Get(m => m.BrandId == id));
+            var result = _modelDal.Get(m => m.BrandId == id);
+            if (result != null)
+            {
+                return new SuccessDataResult<Model>(result);
+            }
+            return new ErrorDataResult<Model>();
         }
 
+        [CacheAspect(typeof(DataResult<Model>))]
         public IDataResult<Model> GetById(int id)
         {
-            return new SuccessDataResult<Model>(_modelDal.Get(m => m.Id == id));
+            var result =_modelDal.Get(m => m.Id == id);
+            if (result != null)
+            {
+                return new SuccessDataResult<Model>(result);
+            }
+            return new ErrorDataResult<Model>();
         }
 
+        [CacheAspect(typeof(DataResult<Model>))]
         public IDataResult<Model> GetByName(string name)
         {
-            return new SuccessDataResult<Model>(_modelDal.Get(m => $"{m.NamePrefix} {m.NameSuffix}" == name));
+            var result = _modelDal.Get(m => $"{m.NamePrefix} {m.NameSuffix}" == name);
+            if (result != null)
+            {
+                return new SuccessDataResult<Model>(result);
+            }
+            return new ErrorDataResult<Model>();
         }
 
+        [CacheRemoveAspect("IModelService.Get")]
         public IResult Update(Model entity)
         {
+            IResult result = BusinessRules.Run(CheckIfExists(entity.NameSuffix));
+
+            if (result == null)
+            {
+                return result;
+            }
             _modelDal.Update(entity);
             return new SuccessResult();
         }
 
         private IResult CheckIfExists(string name)
         {
-            var result = GetByName(name).Data;
-            if (result != null)
+            var result = GetByName(name);
+            if (result.Success)
             {
                 return new ErrorResult(Messages.ThisRecordExists);
             }

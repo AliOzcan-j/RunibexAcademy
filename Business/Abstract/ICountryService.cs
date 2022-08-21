@@ -9,8 +9,14 @@ using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
-    public interface ICountryService : IEntityServiceBase<Country>, IEntityServiceAddon<Country>
+    public interface ICountryService
     {
+        IDataResult<List<Country>> GetAll();
+        IResult Add(Country entity);
+        IResult Update(Country entity);
+        IResult Delete(Country entity);
+        IDataResult<Country>? GetById(int id);
+        IDataResult<Country>? GetByName(string name);
         IDataResult<Country> GetByIsoCode(string isoCode);
     }
 }

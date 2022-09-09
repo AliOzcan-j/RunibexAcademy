@@ -1,5 +1,5 @@
 ﻿using Business.Abstract;
-using Entities.DTOs;
+using Entities.DTOs.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +23,17 @@ namespace WebAPI.Controllers
             if (result.Success)
             {
                 return Ok(result.Message);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost("login")]
+        public IActionResult Login(UserForLoginDto userForLoginDto)
+        {
+            var result = _authService.Login(userForLoginDto);
+            if (result.Success)
+            {
+                return Ok(result.Data);
             }
             return BadRequest(result.Message);
         }

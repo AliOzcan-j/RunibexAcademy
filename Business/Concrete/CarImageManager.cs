@@ -7,11 +7,12 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.CarImage;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -87,9 +88,9 @@ namespace Business.Concrete
             return new ErrorResult();
         }
 
-        public IDataResult<List<CarImage>> GetAll()
+        public IDataResult<List<CarImage>> GetAll(Expression<Func<CarImage, bool>> filter = null)
         {
-            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll());
+            return new SuccessDataResult<List<CarImage>>(_carImageDal.GetAll(filter));
         }
 
         [CacheAspect(typeof(DataResult<List<CarImage>>))]

@@ -9,6 +9,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,9 +50,9 @@ namespace Business.Concrete
         }
 
         [CacheAspect(typeof(DataResult<List<FuelType>>))]
-        public IDataResult<List<FuelType>> GetAll()
+        public IDataResult<List<FuelType>> GetAll(Expression<Func<FuelType, bool>> filter = null)
         {
-            return new SuccessDataResult<List<FuelType>>(_fuelTypeDal.GetAllWithoutTracker());
+            return new SuccessDataResult<List<FuelType>>(_fuelTypeDal.GetAllWithoutTracker(filter));
         }
 
         [CacheAspect(typeof(DataResult<FuelType>))]

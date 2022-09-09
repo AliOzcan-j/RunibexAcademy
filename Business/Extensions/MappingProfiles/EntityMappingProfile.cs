@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.Car;
+using Entities.DTOs.Model;
+using Entities.DTOs.Payment;
+using Entities.DTOs.Rental;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +16,12 @@ namespace Business.Extensions.MappingProfiles
     {
         public EntityMappingProfile()
         {
-            CreateMap<Car, CarDto>().ReverseMap();
+            CreateMap<Car, CarDtoForAdd>().ReverseMap();
+            CreateMap<Car, CarDtoForUpdate>().ReverseMap();
             CreateMap<Model, ModelDto>().ReverseMap();
+            CreateMap<Rental, RentalDtoForAdd>().ReverseMap();
+            CreateMap<Rental, RentalDtoForDelete>().ReverseMap();
+            CreateMap<Payment, PaymentDtoForAdd>().ReverseMap();
         }
     }
 }

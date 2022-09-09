@@ -9,6 +9,7 @@ using Core.Utilities.Extensions;
 using Core.Utilities.IoC;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFrameworkCore;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -76,6 +77,13 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+//app.UseExceptionHandler(c => c.Run(async context =>
+//{
+//    var exception = context.Features.Get<IExceptionHandlerPathFeature>().Error;
+//    var response = new { error = exception.Message };
+//    await context.Response.WriteAsJsonAsync(response);
+//}));
 
 app.UseAuthorization();
 

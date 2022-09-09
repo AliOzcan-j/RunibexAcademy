@@ -7,7 +7,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.Car;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,10 +42,10 @@ namespace Business.Concrete
                 ? new SuccessResult() 
                 : new ErrorResult();
         }
-
-        public IDataResult<List<Car>> GetAll()
+        [CacheAspect(typeof(DataResult<List<Car>>))]
+        public IDataResult<List<Car>> GetAll(Expression<Func<Car, bool>> filter = null)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll());
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(filter));
         }
 
         [CacheAspect(typeof(DataResult<List<Car>>))]

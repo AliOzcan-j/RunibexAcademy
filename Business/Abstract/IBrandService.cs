@@ -11,7 +11,7 @@ namespace Business.Abstract
 {
     public interface IBrandService
     {
-        IDataResult<List<Brand>> GetAll();
+        IDataResult<List<Brand>> GetAll(Expression<Func<Brand, bool>> filter);
         IResult Add(Brand entity);
         IResult Update(Brand entity);
         IResult Delete(Brand entity);

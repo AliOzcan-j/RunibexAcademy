@@ -1,6 +1,6 @@
 ﻿using Core.DataAccess;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.Car;
 using System.Linq.Expressions;
 
 namespace DataAccess.Abstract

@@ -1,7 +1,7 @@
 ﻿using Core.DataAccess.EntityFrameworkCore;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.CarImage;
 using System.Linq.Expressions;
 
 namespace DataAccess.Concrete.EntityFrameworkCore

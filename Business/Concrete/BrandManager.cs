@@ -63,9 +63,9 @@ namespace Business.Concrete
         }
 
         [CacheAspect(typeof(IDataResult<List<Brand>>))]
-        public IDataResult<List<Brand>> GetAll()
+        public IDataResult<List<Brand>> GetAll(Expression<Func<Brand, bool>> filter)
         {
-            return new SuccessDataResult<List<Brand>>(_brandDal.GetAllWithoutTracker());
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAllWithoutTracker(filter));
         }
         [CacheRemoveAspect("IBrandService.Get")]
         public IResult Update(Brand entity)

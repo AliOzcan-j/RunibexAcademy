@@ -23,5 +23,6 @@ namespace Entities.Concrete
         public Country Country { get; set; }
         public List<OperationClaim> OperationClaims { get; set; }
         public List<Payment> Payments { get; set; }
+        public List<Rental> Rentals { get; set; }
     }
 }

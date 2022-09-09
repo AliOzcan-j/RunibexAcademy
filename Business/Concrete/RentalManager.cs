@@ -6,7 +6,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.Rental;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +27,11 @@ namespace Business.Concrete
 
         public IResult Add(Rental entity)
         {
+            IResult result = BusinessRules.Run(CheckIfReturned(entity.CarId));
+            if (result != null)
+            {
+                return new ErrorResult(Messages.VehicleIsntReturned);
+            }
             _rentalDal.Add(entity);
             return new SuccessResult();
         }
@@ -34,7 +39,7 @@ namespace Business.Concrete
         [CacheRemoveAspect("IRentalService.Get")]
         public IResult Delete(Rental entity)
         {
-            IResult result = BusinessRules.Run(CheckIfExists(entity.Id));
+            IResult result = BusinessRules.Run(CheckIfExists(entity.CarId));
             if(result == null)
             {
                 return result;
@@ -43,9 +48,9 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        public IDataResult<List<Rental>> GetAll()
+        public IDataResult<List<Rental>> GetAll(Expression<Func<Rental, bool>> filter = null)
         {
-            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAllWithoutTracker());
+            return new SuccessDataResult<List<Rental>>(_rentalDal.GetAllWithoutTracker(filter));
         }
 
         [CacheAspect(typeof(DataResult<Rental>))]
@@ -57,18 +62,6 @@ namespace Business.Concrete
                 return new SuccessDataResult<Rental>(result);
             }
             return new ErrorDataResult<Rental>();
-        }
-
-        [CacheAspect(typeof(DataResult<List<RentalDetailDto>>))]
-        public IDataResult<List<RentalDetailDto>> GetCarDetails(Expression<Func<RentalDetailDto, bool>> filter = null)
-        {
-            var result = _rentalDal.GetRentalDetails(filter);
-            if (result.Any())
-            {
-                return new SuccessDataResult<List<RentalDetailDto>>(result);
-            }
-            return new ErrorDataResult<List<RentalDetailDto>>();
-
         }
 
         [CacheRemoveAspect("IRentalService.Get")]
@@ -85,10 +78,20 @@ namespace Business.Concrete
 
         private IResult CheckIfExists(int id)
         {
-            var result = _rentalDal.Get(x => x.Id == id);
+            var result = _rentalDal.Get(x => x.CarId == id);
             if (result != null)
             {
                 return new ErrorResult(Messages.ThisRecordExists);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfReturned(int id)
+        {
+            var result = _rentalDal.Get(x => x.CarId == id);
+            if(result !=null && result.IsActive == true)
+            {
+                return new ErrorResult();
             }
             return new SuccessResult();
         }

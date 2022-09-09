@@ -9,6 +9,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,9 +52,9 @@ namespace Business.Concrete
         }
 
         [CacheAspect(typeof(DataResult<List<Color>>))]
-        public IDataResult<List<Color>> GetAll()
+        public IDataResult<List<Color>> GetAll(Expression<Func<Color, bool>> filter = null)
         {
-            return new SuccessDataResult<List<Color>>(_colorDal.GetAllWithoutTracker());
+            return new SuccessDataResult<List<Color>>(_colorDal.GetAllWithoutTracker(filter));
         }
 
         [CacheAspect(typeof(DataResult<Color>))]

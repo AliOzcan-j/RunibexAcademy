@@ -6,7 +6,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using Core.Utilities.Security.Hashing;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;

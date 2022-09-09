@@ -16,5 +16,6 @@ namespace Business.Constants
         internal static readonly string UserAlreadyExists = "This User Already Exists";
         internal static readonly string UserNotFound = "This user could not be found";
         internal static readonly string IncorrectPassword = "Incorrect password";
+        internal static readonly string VehicleIsntReturned = "Vehicle is not avaliable for rent";
     }
 }

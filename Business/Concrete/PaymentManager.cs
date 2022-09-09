@@ -6,7 +6,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.Payment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +44,7 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        public IDataResult<List<Payment>> GetAll()
+        public IDataResult<List<Payment>> GetAll(Expression<Func<Payment, bool>> filter = null)
         {
             return new SuccessDataResult<List<Payment>>(_paymentDal.GetAllWithoutTracker());
         }
@@ -69,17 +69,6 @@ namespace Business.Concrete
                 return new SuccessDataResult<List<Payment>> (result);
             }
             return new ErrorDataResult<List<Payment>> ();
-        }
-
-        [CacheAspect(typeof(DataResult<List<PaymentDetailDto>>))]
-        public IDataResult<List<PaymentDetailDto>> GetPaymentDetails(Expression<Func<PaymentDetailDto, bool>> filter = null)
-        {
-            var result = _paymentDal.GetPaymentDetails(filter);
-            if (result.Any())
-            {
-                return new SuccessDataResult<List<PaymentDetailDto>>(result);
-            }
-            return new ErrorDataResult<List<PaymentDetailDto>>();
         }
 
         [CacheRemoveAspect("IPaymentService.Get")]

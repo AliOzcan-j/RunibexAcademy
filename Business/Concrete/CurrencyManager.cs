@@ -6,6 +6,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using System.Linq.Expressions;
 
 namespace Business.Concrete
 {
@@ -44,9 +45,9 @@ namespace Business.Concrete
         }
 
         [CacheAspect(typeof(DataResult<List<Currency>>))]
-        public IDataResult<List<Currency>> GetAll()
+        public IDataResult<List<Currency>> GetAll(Expression<Func<Currency, bool>> filter = null)
         {
-            return new SuccessDataResult<List<Currency>>(_currencyDal.GetAllWithoutTracker());
+            return new SuccessDataResult<List<Currency>>(_currencyDal.GetAllWithoutTracker(filter));
         }
 
         [CacheAspect(typeof(DataResult<Currency>))]

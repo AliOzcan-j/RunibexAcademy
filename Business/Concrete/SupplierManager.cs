@@ -9,6 +9,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,9 +42,9 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
-        public IDataResult<List<Supplier>> GetAll()
+        public IDataResult<List<Supplier>> GetAll(Expression<Func<Supplier, bool>> filter = null)
         {
-            return new SuccessDataResult<List<Supplier>>(_supplierDal.GetAllWithoutTracker());
+            return new SuccessDataResult<List<Supplier>>(_supplierDal.GetAllWithoutTracker(filter));
         }
 
         [CacheAspect(typeof(DataResult<Supplier>))]

@@ -1,7 +1,7 @@
 ﻿using Core.DataAccess.EntityFrameworkCore;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.Car;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -47,6 +47,20 @@ namespace DataAccess.Concrete.EntityFrameworkCore
 
                 car.Model.Brand = brand;
                 context.Add(car);
+                context.SaveChanges();
+            }
+        }
+
+        public new void Update(Car car)
+        {
+            using (AcademyContext context = new AcademyContext())
+            {
+                var tracked = context.Cars
+                    .Include(x => x.Model)
+                    .ThenInclude(x => x.Brand)
+                    .SingleOrDefault(x => x.Id == car.Id && x.Model.Id == car.ModelId);
+
+                context.Entry(tracked).CurrentValues.SetValues(car);
                 context.SaveChanges();
             }
         }

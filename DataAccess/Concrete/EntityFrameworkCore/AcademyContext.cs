@@ -1,5 +1,9 @@
 ﻿using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.Car;
+using Entities.DTOs.CarImage;
+using Entities.DTOs.Payment;
+using Entities.DTOs.Rental;
+using Entities.DTOs.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -35,8 +39,6 @@ namespace DataAccess.Concrete.EntityFrameworkCore
         public DbSet<CarImage> CarImages { get; set; }
         public DbSet<Rental> Rentals { get; set; }
         public DbSet<CarDetailDto> CarDetailDtos { get; set; }
-        public DbSet<RentalDetailDto> RentalDetailDtos { get; set; }
-        public DbSet<PaymentDetailDto> PaymentDetailDtos { get; set; }
         public DbSet<UserDetailDto> UserDetailDtos { get; set; }
         public DbSet<UserForLoginDto> UserForLoginDtos { get; set; }
         public DbSet<UserForRegisterDto> UserForRegisterDtos { get; set; }
@@ -83,11 +85,15 @@ namespace DataAccess.Concrete.EntityFrameworkCore
 
             #region RentalModel
             modelBuilder.Entity<Rental>().Property(x => x.RentDate).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Rental>().HasOne(x => x.Payment).WithOne(x => x.Rental).HasForeignKey<Rental>(x => x.PaymentId);
+            modelBuilder.Entity<Rental>().HasOne(x => x.Car).WithMany(x => x.Rentals).HasForeignKey(x => x.CarId);
+            modelBuilder.Entity<Rental>().HasOne(x => x.User).WithMany(x => x.Rentals).HasForeignKey(x => x.UserId);
             #endregion
 
             #region PaymentModel
             modelBuilder.Entity<Payment>().Property(x => x.PaymentDate).ValueGeneratedOnAdd();
             modelBuilder.Entity<Payment>().Property(x => x.Amount).HasPrecision(18, 2);
+            modelBuilder.Entity<Payment>().HasOne(x => x.User).WithMany(x => x.Payments).HasForeignKey(x => x.UserId);
             #endregion
 
             #region OpeationClaimModel
@@ -129,7 +135,6 @@ namespace DataAccess.Concrete.EntityFrameworkCore
             modelBuilder.Entity<Car>().Property(x => x.DailyPrice).HasPrecision(18, 2);
             modelBuilder.Entity<Car>().Property(x => x.IsDeleted).HasDefaultValue(false);
             modelBuilder.Entity<Car>().HasOne(x => x.Supplier).WithMany(x => x.Cars).HasForeignKey(x => x.SupplierId);
-            //modelBuilder.Entity<Car>().HasOne(x => x.Brand).WithMany(x => x.Cars).HasForeignKey(x => x.BrandId);
             modelBuilder.Entity<Car>().HasOne(x => x.Model).WithMany(x => x.Cars).HasForeignKey(x => x.ModelId);
             modelBuilder.Entity<Car>().HasOne(x => x.Color).WithMany(x => x.Cars).HasForeignKey(x => x.ColorId);
             modelBuilder.Entity<Car>().HasOne(x => x.FuelType).WithMany(x => x.Cars).HasForeignKey(x => x.FuelTypeId);
@@ -141,8 +146,6 @@ namespace DataAccess.Concrete.EntityFrameworkCore
 
             #region DtoModels
             modelBuilder.Entity<CarDetailDto>().HasNoKey().ToTable(nameof(CarDetailDto), x => x.ExcludeFromMigrations());
-            modelBuilder.Entity<RentalDetailDto>().HasNoKey().ToTable(nameof(RentalDetailDto), x => x.ExcludeFromMigrations());
-            modelBuilder.Entity<PaymentDetailDto>().HasNoKey().ToTable(nameof(PaymentDetailDto), x => x.ExcludeFromMigrations());
             modelBuilder.Entity<UserDetailDto>().HasNoKey().ToTable(nameof(UserDetailDto), x => x.ExcludeFromMigrations());
             modelBuilder.Entity<UserForLoginDto>().HasNoKey().ToTable(nameof(UserForLoginDto), x => x.ExcludeFromMigrations());
             modelBuilder.Entity<UserForRegisterDto>().HasNoKey().ToTable(nameof(UserForRegisterDto), x => x.ExcludeFromMigrations());

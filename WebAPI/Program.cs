@@ -23,7 +23,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterMod
 builder.Services.AddAutoMapper(typeof(EntityMappingProfile));
 builder.Services.AddDependencyResolvers(new ICoreModule[]
 {
-    new CoreModule()
+    new CoreModule(new ConfigurationBuilder())
 });
 
 builder.Services.AddControllers();

@@ -51,7 +51,7 @@ namespace Core.CrossCuttingConcerns.Caching.Redis
             Database.KeyDelete(key);
         }
 
-        public void RemoveByPattern(string pattern)//IEntityServiceBase.Get
+        public void RemoveByPattern(string pattern)
         {
             //var regex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
             

@@ -1,4 +1,5 @@
 ﻿using Core.Utilities.MessageBrokers;
+using Core.Utilities.MessageBrokers.Events;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +17,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("publish")]
-        public IActionResult Publish()
+        public async Task<IActionResult> Publish(string email)
         {
-            _messageBroker.Publish("Deneme");
+            _messageBroker.Publish(new UserRegisteredEvent() { UserEmail="deneme@deneme.com"});
             return Ok();
         }
     }

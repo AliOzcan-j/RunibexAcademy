@@ -12,6 +12,7 @@ using Core.Utilities.MessageBrokers;
 using Core.Utilities.MessageBrokers.RabbitMQ;
 using RabbitMQ.Client;
 using Microsoft.Extensions.Configuration;
+using Core.BackgroundServices;
 
 namespace Core.DependencyResolvers
 {
@@ -39,6 +40,7 @@ namespace Core.DependencyResolvers
             });
             serviceCollection.AddSingleton<RabbitMQClientService>();
             serviceCollection.AddSingleton<IMessageBroker, RabbitMQPublisher>();
+            serviceCollection.AddHostedService<EmailResponseBackgroundService>();
         }
     }
 }

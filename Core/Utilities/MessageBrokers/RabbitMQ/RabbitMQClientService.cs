@@ -16,6 +16,7 @@ namespace Core.Utilities.MessageBrokers.RabbitMQ
         private IModel _channel;
         public string ExchangeName => _configuration.ExchangeName;
         public string RoutingKey => _configuration.RoutingKey;
+        public string QueueName => _configuration.QueueName;
 
         public RabbitMQClientService(ConnectionFactory connectionFactory, RabbitMQConfiguration configuration)
         {

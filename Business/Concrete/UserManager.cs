@@ -1,7 +1,9 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Queue;
 using Core.Utilities.Business.Concrete;
+using Core.Utilities.MessageBrokers.Events;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -24,6 +26,7 @@ namespace Business.Concrete
             _userDal = userDal;
         }
 
+        [QueueAfterAspect(typeof(UserRegisteredEvent))]
         public IResult Add(User entity)
         {
             _userDal.Add(entity);

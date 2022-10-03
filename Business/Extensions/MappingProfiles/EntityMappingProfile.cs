@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Entities.Concrete;
 using Entities.DTOs.Car;
+using Entities.DTOs.CarImage;
 using Entities.DTOs.Model;
 using Entities.DTOs.Payment;
 using Entities.DTOs.Rental;
@@ -22,6 +23,7 @@ namespace Business.Extensions.MappingProfiles
             CreateMap<Rental, RentalDtoForAdd>().ReverseMap();
             CreateMap<Rental, RentalDtoForDelete>().ReverseMap();
             CreateMap<Payment, PaymentDtoForAdd>().ReverseMap();
+            CreateMap<CarImage, CarImageDtoForAdd>().ReverseMap();
         }
     }
 }

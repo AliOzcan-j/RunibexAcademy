@@ -56,6 +56,72 @@ namespace WebAPI.Controllers
             return BadRequest(result.Message);
         }
 
+        [HttpGet("getcardetails")]
+        public IActionResult GetCarDetails(CarDetailDto carDetailDto)
+        {
+            var result = _carService.GetCarDetails(x => x.BrandName == carDetailDto.BrandName && x.ModelName == carDetailDto.ModelName);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("getbysupplierid")]
+        public IActionResult GetBySupplierId(int id)
+        {
+            var result = _carService.GetBySupplierId(id);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getbybrandid")]
+        public IActionResult GetByBrandId(int id)
+        {
+            var result = _carService.GetByBrandId(id);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getbymodelid")]
+        public IActionResult GetByModelId(int id)
+        {
+            var result = _carService.GetByModelId(id);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getbycolorid")]
+        public IActionResult GetByColorId(int id)
+        {
+            var result = _carService.GetByColorId(id);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpGet("getbyfueltypeid")]
+        public IActionResult GetByFuelTypeId(int id)
+        {
+            var result = _carService.GetByFuleTypeId(id);
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            return BadRequest(result.Message);
+        }
+
         [HttpPost("update")]
         public IActionResult Update(CarDtoForUpdate carDtoForUpdate)
         {
